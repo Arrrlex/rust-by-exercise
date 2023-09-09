@@ -14,7 +14,6 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -22,6 +21,16 @@ use std::collections::HashMap;
 struct Team {
     goals_scored: u8,
     goals_conceded: u8,
+}
+
+impl Team {
+    fn zero() -> Team {
+        Team {goals_scored: 0, goals_conceded: 0 }
+    }
+
+    fn add(&self, goals_scored: u8, goals_conceded: u8) -> Team {
+        Team { goals_scored: self.goals_scored + goals_scored, goals_conceded: self.goals_conceded + goals_conceded }
+    }
 }
 
 fn build_scores_table(results: String) -> HashMap<String, Team> {
@@ -34,11 +43,13 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         let team_1_score: u8 = v[2].parse().unwrap();
         let team_2_name = v[1].to_string();
         let team_2_score: u8 = v[3].parse().unwrap();
-        // TODO: Populate the scores table with details extracted from the
-        // current line. Keep in mind that goals scored by team_1
-        // will be the number of goals conceded from team_2, and similarly
-        // goals scored by team_2 will be the number of goals conceded by
-        // team_1.
+
+        let team_1 = scores.get(&team_1_name).unwrap_or(&Team::zero()).add(team_1_score, team_2_score);
+        let team_2 = scores.get(&team_2_name).unwrap_or(&Team::zero()).add(team_2_score, team_1_score);
+
+        scores.insert(team_1_name, team_1);
+        scores.insert(team_2_name, team_2);
+
     }
     scores
 }
